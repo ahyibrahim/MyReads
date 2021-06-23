@@ -7,15 +7,33 @@ import SearchPage from "./Pages/SearchPage";
 
 function BooksApp() {
   const [books, setBooks] = useState([]);
+  const [booksInit, setBooksInit] = useState(false);
+
+  const fetchAndUpdateBooks = useCallback(() => {
+    BooksApi.getAll().then((books) => {
+      console.log(`Books in api call: ${books}`);
+      setBooksInState(books);
+    });
+  }, []);
+
+  const updateFromSearch = useCallback((book, newShelf) => {
+    BooksApi.update(book, newShelf).then(() => fetchAndUpdateBooks());
+  }, []);
 
   const setBooksInState = useCallback((books) => {
     const booksWithShelf = books.map((book) => {
-      book.shelf = "currentlyReading";
       book.changeShelf = (newShelf) => {
         book.shelf = newShelf;
-        setBooks((prev) =>
-          prev.map((newBook) => (newBook.id === book.id ? book : newBook))
-        );
+        let originalBook = book;
+        delete originalBook.changeShelf;
+        BooksApi.update(originalBook, newShelf)
+          .then(() => fetchAndUpdateBooks())
+          .catch((err) => console.log(err));
+        // If we want to update internally only
+        // setBooks((prev) =>{
+        //   const updated = prev.map((newBook) => (newBook.id === book.id ? book : newBook))
+        //   return updated;
+        // });
       };
       return book;
     });
@@ -23,17 +41,17 @@ function BooksApp() {
   }, []);
 
   useEffect(() => {
-    BooksApi.getAll().then((books) => {
-      console.log(`Books in api call: ${books}`);
-      setBooksInState(books);
-    });
+    fetchAndUpdateBooks();
   }, []);
 
   return (
     <BrowserRouter>
       <Switch>
         <Route exact path="/" render={() => <MainPage books={books} />} />
-        <Route path="/search" render={() => <SearchPage />} />
+        <Route
+          path="/search"
+          render={() => <SearchPage updateABook={updateFromSearch} />}
+        />
       </Switch>
     </BrowserRouter>
   );

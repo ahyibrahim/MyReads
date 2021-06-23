@@ -1,32 +1,63 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
+import * as BookAPI from "../../BooksAPI";
+import ListBooks from "../../Components/ListBooks";
 
-class SearchPage extends Component {
-  render() {
-    return (
-      <div className="search-books">
-        <div className="search-books-bar">
-          <Link className="close-search" to="/">
-            Close
-          </Link>
-          <div className="search-books-input-wrapper">
-            {/*
-            NOTES: The search from BooksAPI is limited to a particular set of search terms.
-            You can find these search terms here:
-            https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
+function SearchPage({ updateABook }) {
+  const [queryResults, setQueryResults] = useState([]);
+  const previousAbortController = useRef();
 
-            However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-            you don't find a specific author or title. Every search is limited by search terms.
-          */}
-            <input type="text" placeholder="Search by title or author" />
-          </div>
-        </div>
-        <div className="search-books-results">
-          <ol className="books-grid"></ol>
+  const onTextChanged = useCallback(
+    (e) => {
+      const searchText = e.target.value;
+      if (previousAbortController.current) {
+        previousAbortController.current.abort();
+      }
+      const abortController = new window.AbortController();
+      const { signal } = abortController;
+      previousAbortController.current = abortController;
+      BookAPI.search(searchText, signal)
+        .then((books) => {
+          console.log(books);
+          try {
+            return books.map((book) => {
+              book.changeShelf = (newShelf) => {
+                book.shelf = newShelf;
+                let originalBook = book;
+                delete originalBook.changeShelf;
+                updateABook(book, newShelf);
+              };
+              return book;
+            });
+          } catch (err) {
+            console.log("An error occured:", err);
+            return [];
+          }
+        })
+        .then((res) => res && setQueryResults(res));
+    },
+    [previousAbortController.current]
+  );
+
+  return (
+    <div className="search-books">
+      <div className="search-books-bar">
+        <Link className="close-search" to="/">
+          Close
+        </Link>
+        <div className="search-books-input-wrapper">
+          <input
+            type="text"
+            placeholder="Search by title or author"
+            onChange={onTextChanged}
+          />
         </div>
       </div>
-    );
-  }
+      <div className="search-books-results">
+        {queryResults.length ? <ListBooks books={queryResults} /> : null}
+      </div>
+    </div>
+  );
 }
 
 export default SearchPage;
