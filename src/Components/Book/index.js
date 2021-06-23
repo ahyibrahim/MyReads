@@ -1,9 +1,9 @@
 import React from "react";
 
-const index = ({ title, authors, cover, shelf, id, bookShelfChanged }) => {
+const index = ({ title, authors, cover, bookShelfChanged }) => {
   const onChangeSelect = (event) => {
     console.log(event.target.value);
-    bookShelfChanged(id, shelf, event.target.value);
+    bookShelfChanged(event.target.value);
   };
 
   return (

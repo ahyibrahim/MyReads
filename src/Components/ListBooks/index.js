@@ -1,7 +1,7 @@
 import React from "react";
 import Book from "../Book";
 
-function ListBooks({ books, bookShelfChanged }) {
+function ListBooks({ books }) {
   //console.log(`Books in listBooks: ${books.map((book) => book.shelf)}`);
   return (
     <ol className="books-grid">
@@ -9,7 +9,7 @@ function ListBooks({ books, bookShelfChanged }) {
         return (
           <li key={book.id}>
             <Book
-              bookShelfChanged={bookShelfChanged}
+              bookShelfChanged={book.changeShelf}
               title={book.title}
               authors={book.authors}
               cover={book.imageLinks.smallThumbnail}

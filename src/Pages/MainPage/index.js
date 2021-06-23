@@ -4,7 +4,7 @@ import Shelf from "../../Components/Shelf";
 
 //const [stateBooks, updateBooks] = React.useState([])
 
-function MainPage({ books, bookShelfChanged }) {
+function MainPage({ books }) {
   //console.log(`Books in MainPage: ${books.map((book) => book.shelf)}`);
 
   return (
@@ -15,17 +15,14 @@ function MainPage({ books, bookShelfChanged }) {
         </div>
         <div className="list-books-content">
           <Shelf
-            bookShelfChanged={bookShelfChanged}
             shelfName="Currently Reading"
             books={books.filter((book) => book.shelf === "currentlyReading")}
           />
           <Shelf
-            bookShelfChanged={bookShelfChanged}
             shelfName="Want to Read"
             books={books.filter((book) => book.shelf === "wantToRead")}
           />
           <Shelf
-            bookShelfChanged={bookShelfChanged}
             shelfName="Read"
             books={books.filter((book) => book.shelf === "read")}
           />
