@@ -1,25 +1,11 @@
 import React from "react";
-import { Route, Link, BrowserRouter, Switch } from "react-router-dom";
-// import * as BooksAPI from './BooksAPI'
+import { Route, BrowserRouter, Switch } from "react-router-dom";
 import "./App.css";
 import * as BooksApi from "./BooksAPI";
 import MainPage from "./Pages/MainPage";
 import SearchPage from "./Pages/SearchPage";
 
 class BooksApp extends React.Component {
-  componentDidMount() {
-    BooksApi.getAll().then((books) => {
-      console.log(`Books in api call: ${books}`);
-      this.setBooksInState(books);
-    });
-  }
-
-  setBooksInState(books) {
-    this.setState((curretState) => ({
-      books: books,
-    }));
-  }
-
   state = {
     /**
      * TODO: Instead of using this state variable to keep track of which page
@@ -31,17 +17,54 @@ class BooksApp extends React.Component {
     books: [],
   };
 
+  componentDidMount() {
+    BooksApi.getAll().then((books) => {
+      console.log(`Books in api call: ${books}`);
+      this.setBooksInState(books);
+    });
+  }
+
+  setBooksInState(books) {
+    console.log(books);
+    books = books.map((book) => {
+      book.shelf = "currentlyReading";
+      return book;
+    });
+
+    this.setState((currentState) => ({
+      books: books,
+    }));
+  }
+
+  bookChangedShelf(bookId, oldShelf, newShelf) {
+    console.log(`State in bookChanged Shelf: ${this.state}`);
+    const changedBook = this.state.books.find((book) => book.id === bookId);
+    changedBook.shelf = newShelf;
+    this.setState((currentState) => ({
+      books: currentState.books.filter((book) => {
+        return book.id !== bookId;
+      }),
+    }));
+    this.setState((currentState) => ({
+      books: [...currentState.books, changedBook],
+    }));
+  }
+
   render() {
-    {
-      console.log(`Books in app.js:  ${this.state.books}`);
-    }
+    console.log(`Books in app.js:  ${this.state.books}`);
+
     return (
       <BrowserRouter>
         <Switch>
           <Route
             exact
             path="/"
-            render={() => <MainPage books={this.state.books} />}
+            render={() => (
+              <MainPage
+                books={this.state.books}
+                bookShelfChanged={this.bookChangedShelf}
+              />
+            )}
           />
           <Route path="/search" render={() => <SearchPage />} />
         </Switch>

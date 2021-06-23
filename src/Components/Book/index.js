@@ -1,6 +1,11 @@
 import React from "react";
 
-const index = ({ title, authors, cover, shelf }) => {
+const index = ({ title, authors, cover, shelf, id, bookShelfChanged }) => {
+  const onChangeSelect = (event) => {
+    console.log(event.target.value);
+    bookShelfChanged(id, shelf, event.target.value);
+  };
+
   return (
     <div className="book">
       <div className="book-top">
@@ -13,7 +18,7 @@ const index = ({ title, authors, cover, shelf }) => {
           }}
         ></div>
         <div className="book-shelf-changer">
-          <select>
+          <select onChange={onChangeSelect}>
             <option value="move" disabled>
               Move to
             </option>
