@@ -3,11 +3,21 @@ import { Route, Link, BrowserRouter, Switch } from "react-router-dom";
 // import * as BooksAPI from './BooksAPI'
 import "./App.css";
 import * as BooksApi from "./BooksAPI";
-import Book from "./Components/Book";
+import MainPage from "./Pages/MainPage";
+import SearchPage from "./Pages/SearchPage";
 
 class BooksApp extends React.Component {
   componentDidMount() {
-    BooksApi.getAll().then((books) => console.log(books));
+    BooksApi.getAll().then((books) => {
+      console.log(`Books in api call: ${books}`);
+      this.setBooksInState(books);
+    });
+  }
+
+  setBooksInState(books) {
+    this.setState((curretState) => ({
+      books: books,
+    }));
   }
 
   state = {
@@ -18,28 +28,22 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
+    books: [],
   };
 
   render() {
+    {
+      console.log(`Books in app.js:  ${this.state.books}`);
+    }
     return (
-      // <Router>
-      //   <Switch>
-      //     <Route>
-      //       <div></div>
-      //     </Route>
-      //   </Switch>
-      // </Router>
       <BrowserRouter>
         <Switch>
           <Route
             exact
             path="/"
-            render={() => <Link to="/Second">Go to Second Route</Link>}
+            render={() => <MainPage books={this.state.books} />}
           />
-          <Route
-            path="/Second"
-            render={() => <Link to="/">Go to First Route</Link>}
-          />
+          <Route path="/search" render={() => <SearchPage />} />
         </Switch>
       </BrowserRouter>
     );

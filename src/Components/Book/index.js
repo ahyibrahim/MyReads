@@ -9,7 +9,7 @@ const index = ({ title, authors, cover, shelf }) => {
           style={{
             width: 128,
             height: 193,
-            backgroundImage: cover,
+            backgroundImage: `url(${cover})`,
           }}
         ></div>
         <div className="book-shelf-changer">
