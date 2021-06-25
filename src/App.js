@@ -50,7 +50,9 @@ function BooksApp() {
         <Route exact path="/" render={() => <MainPage books={books} />} />
         <Route
           path="/search"
-          render={() => <SearchPage updateABook={updateFromSearch} />}
+          render={() => (
+            <SearchPage books={books} updateABook={updateFromSearch} />
+          )}
         />
       </Switch>
     </BrowserRouter>

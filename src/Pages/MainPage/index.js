@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { SHELVES } from "../../Assets/static";
 import Shelf from "../../Components/Shelf";
 
 //const [stateBooks, updateBooks] = React.useState([])
@@ -14,18 +15,12 @@ function MainPage({ books }) {
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          <Shelf
-            shelfName="Currently Reading"
-            books={books.filter((book) => book.shelf === "currentlyReading")}
-          />
-          <Shelf
-            shelfName="Want to Read"
-            books={books.filter((book) => book.shelf === "wantToRead")}
-          />
-          <Shelf
-            shelfName="Read"
-            books={books.filter((book) => book.shelf === "read")}
-          />
+          {SHELVES.map((shelf) => (
+            <Shelf
+              shelfName={shelf.value}
+              books={books.filter((book) => book.shelf === shelf.key)}
+            />
+          ))}
         </div>
         <div className="open-search">
           <Link to="/search">Add a book</Link>

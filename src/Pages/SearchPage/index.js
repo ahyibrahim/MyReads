@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import * as BookAPI from "../../BooksAPI";
 import ListBooks from "../../Components/ListBooks";
 
-function SearchPage({ updateABook }) {
+function SearchPage({ books, updateABook }) {
   const [queryResults, setQueryResults] = useState([]);
   const previousAbortController = useRef();
 
@@ -54,7 +54,9 @@ function SearchPage({ updateABook }) {
         </div>
       </div>
       <div className="search-books-results">
-        {queryResults.length ? <ListBooks books={queryResults} /> : null}
+        {queryResults.length ? (
+          <ListBooks books={queryResults} userBooks={books} />
+        ) : null}
       </div>
     </div>
   );
