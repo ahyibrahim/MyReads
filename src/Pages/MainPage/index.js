@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { SHELVES } from "../../Assets/static";
 import Shelf from "../../Components/Shelf";
 
-//const [stateBooks, updateBooks] = React.useState([])
-
 function MainPage({ books }) {
   //console.log(`Books in MainPage: ${books.map((book) => book.shelf)}`);
 
@@ -19,6 +17,7 @@ function MainPage({ books }) {
             <Shelf
               shelfName={shelf.value}
               books={books.filter((book) => book.shelf === shelf.key)}
+              key={shelf.value}
             />
           ))}
         </div>

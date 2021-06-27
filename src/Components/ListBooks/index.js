@@ -16,7 +16,15 @@ function ListBooks({ books, userBooks }) {
               title={book.title}
               authors={book.authors}
               cover={book && book.imageLinks && book.imageLinks.smallThumbnail}
-              shelf={book.shelf}
+              shelf={
+                book.shelf
+                  ? book.shelf
+                  : userBookRef && userBookRef.length
+                  ? SHELVES.filter(
+                      (shelf) => userBookRef[0].shelf === shelf.key
+                    )[0].key
+                  : "none"
+              }
               id={book.id}
             />
             {userBookRef && userBookRef.length ? (

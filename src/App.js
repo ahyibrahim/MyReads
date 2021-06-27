@@ -7,11 +7,11 @@ import SearchPage from "./Pages/SearchPage";
 
 function BooksApp() {
   const [books, setBooks] = useState([]);
-  const [booksInit, setBooksInit] = useState(false);
+  //const [booksInit, setBooksInit] = useState(false);
 
   const fetchAndUpdateBooks = useCallback(() => {
     BooksApi.getAll().then((books) => {
-      console.log(`Books in api call: ${books}`);
+      //console.log(`Books in api call: ${books}`);
       setBooksInState(books);
     });
   }, []);
